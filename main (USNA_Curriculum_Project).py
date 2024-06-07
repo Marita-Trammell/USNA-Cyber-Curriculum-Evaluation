@@ -1,9 +1,9 @@
-import pandas as pd
+onimport pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Load the dataset, treat 'Unnamed' columns as NaN
-data = pd.read_csv('USNA Curriculum Data.csv', na_values='Unnamed')
+data = pd.read_csv('Question_Data.csv', na_values='Unnamed')
 
 # Strip whitespace from column names
 data.columns = data.columns.str.strip()
