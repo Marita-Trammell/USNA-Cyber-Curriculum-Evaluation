@@ -49,6 +49,7 @@ This repository contains Python code for analyzing student performance data with
 
 ## Conclusions and Recommendations
 Proposed Changes to SY110 Course Learning Objectives
+
 Based on the findings from the data analysis, the following changes to the SY110 Course Learning Outcomes are proposed to address identified gaps and enhance the learning experience:
 
 ## Refine CLOs to Focus on Practical Skills:
