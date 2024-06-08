@@ -1,57 +1,57 @@
-# Dataset Overview
+# Naval Academy Cyber Course Curriculum Restructuring Analysis
 
-This dataset provides insights into student performance across various question types and topics.
+## Project Overview
+This repository contains Python code for analyzing student performance data with the goal of restructuring the curriculum for cyber courses at the Naval Academy. The project aims to provide insights into student performance across various question types and subjects to enhance teaching quality and learning outcomes in cyber-related disciplines.
 
-## Dataset Information
+## Project Structure
+- **question_data.csv**: Dataset containing student performance data for cyber course questions.
+- **instructor_data.csv**: Dataset containing instructor performance data.
+- **data_analysis.ipynb**: Jupyter Notebook containing data cleaning, analysis, and visualization code.
+- **Question_Data_Cleaning.py**: Python script for data cleaning.
+- **Question_Data_Analysis.ipynb**: Jupyter Notebook focusing on detailed data analysis.
+- **README.md**: This file, providing an overview of the project.
 
-First 5 Rows of the Dataset:
+## Requirements
+- Python 3
+- Libraries: pandas, numpy, matplotlib
 
-|   | Question Number | CLO   | Value | Type              | Subject           | Average | Maximum | Q3    | Median | Mode | Q1    | Minimum |
-|---|-----------------|-------|-------|-------------------|-------------------|---------|---------|-------|--------|------|-------|---------|
-| 0 | 1.0             | CLO 2 | 1.5   | Match             | 6-Week Topics     | 96.35%  | 100.00% | 100.00% | 100.00% | 100.00% | 100.00% | 52.78%  |
-| 1 | 2.0             | CLO 2 | 1.5   | Fill-in-the-Blank | 6-Week Topics     | 63.71%  | 98.61%  | 82.99%  | 70.49%  | 68.06%  | 44.62%  | 15.28%  |
-...
+## Usage
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your_username/naval-academy-cyber-curriculum.git
+2. Navigate to the project directory:
+   cd naval-academy-cyber-curriculum
+3. Install the required libraries:
+   pip install -r requirements.txt
+4. Run the Jupyter notebooks or Python scripts to perform data analysis and visualization.
+
+## Data Set
+- question_data.csv: Contains student performance data for cyber course questions.
+- instructor_data.csv: Contains instructor performance data.
 
 ## Data Cleaning
+- Removed columns with no headers and rows with all NaN values.
+- Converted percentage columns to float.
+- Rounded numerical columns to desired decimal places.
 
-- Removed columns with no header.
-- Removed rows with all NaN values.
-- Converted percentage columns from strings to float.
-- Filled NaN values in 'Type' column with a default color.
-- Converted 'Type' column to categorical codes.
+## Data Exploration 
+- Provided statistical summaries for question and instructor data.
+- Explored relationships between various factors affecting student performance.
 
-## Data Exploration
+## Data Visualization 
+- Box plots, bar plots, and scatter plots to visualize student performance and relationships between variables.
 
-- Statistical summary.
-- Boxplot of average scores by CLO Type.
-- Barplot of average scores by CLO Subject.
-- Scatter plot of Question Number vs Average Score.
-- Boxplot of Average Scores by CLO.
-- Scatter plot of Value vs Average Score colored by Type.
-- Correlation matrix.
-- Average score comparison between 6-Week and 12-Week Topics.
+## Insights 
+- Identified high and low performing question types and subjects.
+- Provided recommendations for restructuring the curriculum based on performance insights.
 
-## Insights
-
-### High Performing Question Types:
-
-|   | Question Number | Type  | Average |
-|---|-----------------|-------|---------|
-| 0 | 1.0             | 1     | 0.9635  |
-| 5 | 6.0             | 2     | 0.8728  |
-...
-
-### Low Performing Question Types:
-
-|   | Question Number | Type  | Average |
-|---|-----------------|-------|---------|
-| 9  | 10.0            | 4     | 0.5489  |
-| 11 | 12.0            | 0     | 0.4053  |
-...
-
-## Conclusion
-
-1. The dataset provides insights into student performance across various question types and topics.
-2. High-performing questions are predominantly of type 'Match' and 'Single-Select'.
-3. Low-performing questions often belong to 'Fill-in-the-Blank' and 'True/False' types.
-4. Recommend focusing on improving student performance in low-performing question types.
+## Conclusions and Recommendations
+The analysis aims to provide insights into student performance in cyber courses at the Naval Academy.
+High-performing question types and subjects will be emphasized in the curriculum restructuring.
+Low-performing areas will be targeted for improvement to enhance teaching effectiveness.
+Recommendations:
+- Adjust curriculum focus based on high-performing question types and subjects.
+- Provide additional support or resources for topics identified as low-performing.
+- Incorporate effective teaching strategies identified from high-performing sections.
+- Continuously monitor student performance to adapt the curriculum as needed.
+- Collaborate with instructors to improve teaching quality and student learning outcomes.
