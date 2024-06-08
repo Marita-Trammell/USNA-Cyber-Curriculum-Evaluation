@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
 
 # Load the dataset, treat 'Unnamed' columns as NaN
 question_data = pd.read_csv('Question_Data.csv', na_values='Unnamed')
@@ -57,6 +60,7 @@ print("\nFirst 5 Rows of the Cleaned Dataset:")
 print(question_data.iloc[:, :12].head())  # Show only the first 12 columns
 
 # Data Exploration
+
 # Statistical summary for Question Data
 print("\nStatistical Summary for Question Data:")
 question_summary_cols = [col for col in question_data.columns if col not in ['Question Number', 'Value']]
@@ -69,6 +73,78 @@ instructor_summary = instructor_data.describe().drop('count').round(2)
 print(instructor_summary)
 
 # Data Visualization
+
+# Machine Learning - Predictive Modeling (Example: Linear Regression)
+# Let's predict 'Average' scores based on other features in the dataset
+
+# Encode categorical variables
+question_data_encoded = pd.get_dummies(question_data, columns=['CLO', 'Subject'])
+
+# Simplify column names
+question_data_encoded.columns = [col.replace('CLO_', '').replace('Subject_', 'Subject ') for col in question_data_encoded.columns]
+
+# Selecting features and target variable
+excluded_cols = ['Average', 'Maximum', 'Q3', 'Median', 'Mode', 'Q1', 'Minimum', 'Question Number', 'Value']
+X = question_data_encoded.drop(excluded_cols, axis=1)
+y = question_data_encoded['Average']
+
+# Splitting the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Training the model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predictions on the test set
+y_pred = model.predict(X_test)
+
+# Model evaluation
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+print("\nMean Squared Error (MSE) on Test Set:", mse)
+print("R-squared (R2) on Test Set:", r2)
+
+# Extracting feature importances
+feature_importances = pd.Series(model.coef_, index=X.columns)
+
+# Visualization Enhancements
+
+# 1. Feature Importances
+plt.figure(figsize=(12, 8))
+feature_importances.nlargest(10).plot(kind='barh')
+plt.title("Top 10 Feature Importances")
+plt.xlabel("Importance")
+plt.ylabel("Features")
+plt.show()
+
+# 2. Actual vs Predicted Values
+plt.figure(figsize=(12, 8))
+plt.scatter(y_test, y_pred, edgecolor='k', alpha=0.75)
+plt.plot([y.min(), y.max()], [y.min(), y.max()], 'r--')
+plt.title("Actual vs Predicted Average Scores")
+plt.xlabel("Actual Average Scores")
+plt.ylabel("Predicted Average Scores")
+plt.show()
+
+# 3. Distribution of Residuals
+residuals = y_test - y_pred
+plt.figure(figsize=(12, 8))
+plt.hist(residuals, bins=30, edgecolor='k', alpha=0.75)
+plt.title("Distribution of Residuals")
+plt.xlabel("Residuals")
+plt.ylabel("Frequency")
+plt.show()
+
+# 4. Residuals vs Fitted Values
+plt.figure(figsize=(12, 8))
+plt.scatter(y_pred, residuals, edgecolor='k', alpha=0.75)
+plt.axhline(0, color='r', linestyle='--')
+plt.title("Residuals vs Fitted Values")
+plt.xlabel("Fitted Values (Predicted Average Scores)")
+plt.ylabel("Residuals")
+plt.show()
+
+
 
 # Box plot of Average Scores by Section ID
 plt.figure(figsize=(12, 8))
