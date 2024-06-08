@@ -20,12 +20,12 @@ This repository contains Python code for analyzing student performance data with
    ```bash
    git clone https://github.com/your_username/naval-academy-cyber-curriculum.git
 2. Navigate to the project directory:
-3. ```bash
+   ```bash
    cd naval-academy-cyber-curriculum
-4. Install the required libraries:
-5. ```bash
+3. Install the required libraries:
+   ```bash
    pip install -r requirements.txt
-6. Run the Jupyter notebooks or Python scripts to perform data analysis and visualization.
+4. Run the Jupyter notebooks or Python scripts to perform data analysis and visualization.
 
 ## Data Set
 - question_data.csv: Contains student performance data for cyber course questions.
