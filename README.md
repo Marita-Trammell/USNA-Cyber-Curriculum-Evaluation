@@ -1,4 +1,4 @@
-# Naval Academy Cyber Curriculum Restructuring Analysis
+# Naval Academy Cyber Curriculum Analysis
 
 ## Project Overview
 This repository contains Python code for analyzing student performance data with the goal of restructuring the curriculum for cyber courses at the Naval Academy. The project aims to provide insights into student performance across various question types and subjects to enhance teaching quality and learning outcomes in cyber-related disciplines.
