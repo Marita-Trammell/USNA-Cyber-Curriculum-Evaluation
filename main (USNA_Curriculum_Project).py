@@ -3,106 +3,129 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load the dataset, treat 'Unnamed' columns as NaN
-data = pd.read_csv('Question_Data.csv', na_values='Unnamed')
+question_data = pd.read_csv('Question_Data.csv', na_values='Unnamed')
+instructor_data = pd.read_csv('Instructor_Data.csv', na_values='Unnamed')
 
 # Strip whitespace from column names
-data.columns = data.columns.str.strip()
+question_data.columns = question_data.columns.str.strip()
+instructor_data.columns = instructor_data.columns.str.strip()
 
 # Display basic information about the dataset
 print("Dataset Information:")
 print("\nFirst 5 Rows of the Dataset:")
-print(data.iloc[:, :12].head())  # Show only the first 12 columns
+print(question_data.iloc[:, :12].head())  # Show only the first 12 columns
 
 # Add this line to display plots inline in Jupyter Notebook
 %matplotlib inline
 
 # Data Cleaning
-# Remove columns with no header
-data = data.dropna(axis=1, how='all')
+def clean_data(data):
+    # Remove columns with no header
+    data = data.dropna(axis=1, how='all')
+    # Remove rows with all NaN values
+    data = data.dropna(axis=0, how='all')
+    return data
 
-# Remove rows with all NaN values
-data = data.dropna(axis=0, how='all')
+question_data = clean_data(question_data)
+instructor_data = clean_data(instructor_data)
 
 # Convert percentage columns from strings to float
 percentage_cols = ['Average', 'Maximum', 'Q3', 'Median', 'Mode', 'Q1', 'Minimum']
-data[percentage_cols] = data[percentage_cols].replace('%', '', regex=True).astype(float) / 100.0
+question_data[percentage_cols] = question_data[percentage_cols].replace('%', '', regex=True).astype(float) / 100.0
+
+# Convert 'Average' to numeric
+instructor_data['Average'] = instructor_data['Average'].str.rstrip('%').astype(float) / 100.0
+
+# Round columns to desired decimal places
+decimal_places = {'Average': 2, 'Maximum': 2, 'Q3': 2, 'Median': 2, 'Mode': 2, 'Q1': 2, 'Minimum': 2}
+question_data = question_data.round(decimal_places)
+
+# Format 'Question Number' column to remove decimal places
+question_data['Question Number'] = question_data['Question Number'].astype(int)
 
 # Fill NaN values in 'Type' column with a default color
 default_color = 'gray'  # You can choose any color you prefer for NaN values
-data['Type'] = data['Type'].fillna(default_color)
+question_data['Type'] = question_data['Type'].fillna(default_color)
 
-# Convert 'Type' column to categorical codes
-data['Type'] = pd.Categorical(data['Type'])
-data['Type'] = data['Type'].cat.codes
+# Convert 'Type' column to categorical codes and create type mapping
+question_data['Type'] = pd.Categorical(question_data['Type'])
+type_mapping = dict(enumerate(question_data['Type'].cat.categories))  # Mapping of categorical codes to original strings
+question_data['Type'] = question_data['Type'].cat.codes
 
 # Display cleaned dataset information
 print("\nFirst 5 Rows of the Cleaned Dataset:")
-print(data.iloc[:, :12].head())  # Show only the first 12 columns
+print(question_data.iloc[:, :12].head())  # Show only the first 12 columns
 
 # Data Exploration
-# Statistical summary
-print("\nStatistical Summary:")
-# Select columns for statistical summary (excluding 'Question Number' and 'Value')
-stat_summary_cols = [col for col in data.columns if col not in ['Question Number', 'Value']]
-print(data[stat_summary_cols].describe().drop('count'))
+# Statistical summary for Question Data
+print("\nStatistical Summary for Question Data:")
+question_summary_cols = [col for col in question_data.columns if col not in ['Question Number', 'Value']]
+question_summary = question_data[question_summary_cols].describe().drop('count').round(2)
+print(question_summary)
+
+# Statistical summary for Instructor Data
+print("\nStatistical Summary for Instructor Data:")
+instructor_summary = instructor_data.describe().drop('count').round(2)
+print(instructor_summary)
 
 # Data Visualization
+
+# Box plot of Average Scores by Section ID
+plt.figure(figsize=(12, 8))
+instructor_data.boxplot(column='Average', by='Section ID')
+plt.title("Average Scores by Section ID")
+plt.xlabel("Section ID")
+plt.ylabel("Average Score")
+plt.xticks(rotation=45)
+plt.show()
+
+# Replace categorical codes with original string values for Type column
+question_data['Type'] = question_data['Type'].map(type_mapping)
+
 # CLO Type by Average
 plt.figure(figsize=(10, 6))
-data.boxplot(column='Average', by='Type', figsize=(10, 6))
-plt.title("Average Scores by CLO Type")
-plt.xlabel("CLO Type")
+question_data.boxplot(column='Average', by='Type', figsize=(10, 6))
+plt.title("Average Scores by Question Type")
+plt.xlabel("Question Type")
 plt.ylabel("Average Score")
 plt.xticks(rotation=45)
 plt.show()
 
 # CLO Subject by Average
 plt.figure(figsize=(10, 6))
-data.groupby('Subject')['Average'].mean().plot(kind='bar')
-plt.title("Average Scores by CLO Subject")
-plt.xlabel("CLO Subject")
+question_data.groupby('Subject')['Average'].mean().plot(kind='bar')
+plt.title("Average Scores by Question Subject")
+plt.xlabel("Question Subject")
 plt.ylabel("Average Score")
 plt.xticks(rotation=45)
 plt.show()
 
 # Question by Average
 plt.figure(figsize=(12, 8))
-plt.scatter(data['Question Number'], data['Average'], s=100, c=data['Type'], cmap='viridis')
-plt.title("Average Scores by Question")
+colors = question_data['Type'].map({'Match': 'blue', 'Fill-in-the-Blank': 'orange',
+                                    'Multiple Select': 'green', 'Single-Select': 'red',
+                                    'Solve': 'purple', 'True/False': 'brown'})
+for question_type, color in zip(question_data['Type'].unique(), colors.unique()):
+    plt.scatter(question_data[question_data['Type'] == question_type]['Question Number'],
+                question_data[question_data['Type'] == question_type]['Average'],
+                s=100, c=color, label=question_type)
+plt.title("Question Number vs Average Scores by Question Type")
 plt.xlabel("Question Number")
 plt.ylabel("Average Score")
+plt.legend(title='Question Type')
 plt.show()
 
 # Boxplot of Average Scores by CLO (Course Learning Outcome)
 plt.figure(figsize=(12, 8))
-data.boxplot(column='Average', by='CLO', figsize=(12, 8))
+question_data.boxplot(column='Average', by='CLO', figsize=(12, 8))
 plt.title("Average Scores by Course Learning Outcome (CLO)")
 plt.xlabel("CLO")
 plt.ylabel("Average Score")
 plt.show()
 
-# Scatter plot of Value vs Average Score colored by Type
-plt.figure(figsize=(12, 8))
-plt.scatter(data['Value'], data['Average'], c=data['Type'], cmap='viridis', s=100, alpha=0.5)
-plt.title("Value vs Average Score by Question Type")
-plt.xlabel("Value")
-plt.ylabel("Average Score")
-plt.colorbar(label='Type')
-plt.show()
-
-# Correlation matrix
-plt.figure(figsize=(12, 8))
-corr = data.corr(numeric_only=True)
-plt.imshow(corr, cmap='coolwarm', interpolation='none')
-plt.colorbar()
-plt.xticks(range(len(corr.columns)), corr.columns, rotation=45)
-plt.yticks(range(len(corr.columns)), corr.columns)
-plt.title("Correlation Matrix")
-plt.show()
-
 # Insights
 # Average score comparison between 6-Week and 12-Week Topics
-avg_score_by_subject = data.groupby('Subject')['Average'].mean().reset_index()
+avg_score_by_subject = question_data.groupby('Subject')['Average'].mean().reset_index()
 plt.figure(figsize=(10, 6))
 plt.bar(avg_score_by_subject['Subject'], avg_score_by_subject['Average'])
 plt.title("Average Scores by Subject")
@@ -112,8 +135,8 @@ plt.xticks(rotation=45)
 plt.show()
 
 # Identifying high and low performing question types
-high_performing = data[data['Average'] >= 0.85]
-low_performing = data[data['Average'] <= 0.55]
+high_performing = question_data[question_data['Average'] >= 0.85]
+low_performing = question_data[question_data['Average'] <= 0.55]
 
 print("\nHigh Performing Question Types:")
 print(high_performing[['Question Number', 'Type', 'Average']])
@@ -121,10 +144,28 @@ print(high_performing[['Question Number', 'Type', 'Average']])
 print("\nLow Performing Question Types:")
 print(low_performing[['Question Number', 'Type', 'Average']])
 
+
+# Identifying high and low performing subjects
+high_performing_subjects = question_data.groupby('Subject').filter(lambda x: x['Average'].mean() >= 0.85)['Subject'].unique()
+low_performing_subjects = question_data.groupby('Subject').filter(lambda x: x['Average'].mean() <= 0.55)['Subject'].unique()
+
+print("\nHigh Performing Question Subjects:")
+print(high_performing[['Question Number', 'Subject', 'Average']])
+
+print("\nLow Performing Question Subjects:")
+print(low_performing[['Question Number', 'Subject', 'Average']])
+
 # Conclusion
 print("\nConclusions and Recommendations:")
-print("1. The dataset provides insights into student performance across various question types and topics.")
-print("2. High-performing questions are predominantly of type 'Match' and 'Single-Select'.")
-print("3. Low-performing questions often belong to 'Fill-in-the-Blank' and 'True/False' types.")
-print("4. Recommend focusing on improving student performance in low-performing question types")
-
+print("1. The dataset provides valuable insights into student performance across various question types and subjects.")
+print("2. High-performing questions are predominantly of type 'Match' and 'Single-Select', indicating that these question formats are effective.")
+print("3. Low-performing questions are often 'Fill-in-the-Blank' and 'True/False' types, suggesting areas for improvement.")
+print("4. Subjects such as", ", ".join(high_performing_subjects), "are performing exceptionally well on average, while subjects like", ", ".join(low_performing_subjects), "are underperforming.")
+print("5. The statistical summary of instructor data reveals wide variation between section performances, indicating potential differences in teaching effectiveness or student engagement.")
+print("6. Recommendations:")
+print("   - Investigate the factors contributing to the variation in instructor performance among different sections.")
+print("   - Provide additional training or support for instructors in sections with lower average scores.")
+print("   - Encourage collaboration and sharing of best practices among instructors to improve overall teaching quality.")
+print("   - Analyze high-performing sections to identify effective teaching strategies and apply them to other sections.")
+print("   - Continuously monitor instructor performance and student feedback to adapt teaching methods as needed.")
+print("   - Regularly assess and revise course materials based on performance insights to enhance student learning outcomes.")
