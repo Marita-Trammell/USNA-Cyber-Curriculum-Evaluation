@@ -73,6 +73,6 @@ Based on the findings from the data analysis, the following changes to the SY110
 - **Proposed Change**: "Demonstrate advanced techniques in reconnaissance, attack, defense, and forensics of information systems, and apply these techniques in simulated environments."
 
 ## Conclusion
-The data analysis of the SY110 course has provided valuable insights into student performance and the effectiveness of current learning objectives. By refining and enhancing the CLOs to focus more on practical skills, technical understanding, defense mechanisms, user-centric security, and advanced techniques, the course can better prepare students to meet the challenges of the cyber domain.
+The data analysis of the SY110 course has provided valuable insights into student performance and the effectiveness of current learning objectives. By refining and enhancing the CLOs to focus more on practical skills, technical understanding, defense mechanisms, user-centric security, and advanced techniques, and by proposing new teaching methods such as more hands-on labs, interactive workshops, and collaborative projects, the course can better prepare students to meet the challenges of the cyber domain.
 
 These proposed changes aim to bridge identified gaps, improve student engagement and performance, and ensure that the learning outcomes are aligned with the evolving requirements of the field of cybersecurity.
